@@ -47,6 +47,14 @@ The content is optimized for your latest direction:
 - `demo/go/scripts/quality_gate.sh`: format/lint/test quality gate
 - `demo/go`: runnable mini-project for the workshop
 
+## Requirements
+
+- GitHub account with GitHub Copilot access
+- IDE with Copilot enabled (VS Code or JetBrains recommended)
+- Go installed (1.22+; tested in this repo with 1.26.0)
+- `gofmt` and `go vet` available in `PATH` (included with Go)
+- `make` (optional, only for `make quality`)
+
 ## Quick start
 
 ```bash
