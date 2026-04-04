@@ -3,12 +3,15 @@
 ## Session focus
 
 This block is intentionally narrow:
+
 - tiny code changes
 - strict quality gate after each change
 - iterate until checks are green
 
 ## Files we will show
 
+- `docs/08-micro-change-tasks.md`
+- `docs/09-instructions-files-explainer.md`
 - `demo/go/AGENTS.md`
 - `demo/go/.github/copilot-instructions.md`
 - `demo/go/internal/probe/service.go`

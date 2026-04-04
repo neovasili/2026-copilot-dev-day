@@ -36,6 +36,8 @@ The content is optimized for your latest direction:
 - `docs/05-attendee-handout.md`: participant handout
 - `docs/06-logistics-checklist.md`: pre-flight checklist
 - `docs/07-qa-bank.md`: likely Q&A with concise answers
+- `docs/08-micro-change-tasks.md`: concrete easy/medium/hard tasks for live selection
+- `docs/09-instructions-files-explainer.md`: `AGENTS.md` vs `copilot-instructions.md` purpose and tradeoffs
 - `demo/go/AGENTS.md`: prewritten guardrails for Copilot behavior
 - `demo/go/.github/copilot-instructions.md`: Copilot-compatible instruction hook
 - `demo/go/scripts/quality_gate.sh`: format/lint/test quality gate
@@ -65,6 +67,7 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 ## Suggested prep sequence
 
 1. Rehearse `docs/04-live-demo-script.md` exactly once with timer.
-2. Start the demo by showing `demo/go/AGENTS.md`.
-3. Perform one micro-change, run quality gate, iterate to green.
-4. Repeat once and close with the 3 takeaways.
+2. Start the demo by showing `docs/09-instructions-files-explainer.md` and `demo/go/AGENTS.md`.
+3. Pick one task from `docs/08-micro-change-tasks.md` (easy/medium/hard).
+4. Perform one micro-change, run quality gate, iterate to green.
+5. If time allows, repeat with a second task and close with takeaways.

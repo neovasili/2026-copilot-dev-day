@@ -8,12 +8,14 @@ Keep it to 4 slides max.
 - Method: smallest possible change + automatic quality gate.
 
 Speaker note:
+
 - "The workflow is the product, not the single code snippet."
 
 ## Slide 2 - Guardrails in the repo
 
 - `AGENTS.md`: coding rules and mandatory loop.
 - `.github/copilot-instructions.md`: tells Copilot to apply those rules.
+- If needed, explain with `docs/09-instructions-files-explainer.md`.
 - Team style stays explicit and reusable.
 
 ## Slide 3 - Prompt + feedback loop
@@ -23,6 +25,7 @@ Speaker note:
 - If red: fix and repeat until green.
 
 Example prompt:
+
 - "Apply the smallest diff that improves X in `service.go`, keep behavior stable, then run `./scripts/quality_gate.sh` and iterate until it passes."
 
 ## Slide 4 - What to reuse tomorrow

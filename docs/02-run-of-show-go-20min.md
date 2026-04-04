@@ -3,6 +3,7 @@
 ## Goal
 
 Show one repeatable pattern for production work with Copilot:
+
 - minimal scoped change
 - mandatory quality gate (lint + tests)
 - iterate until green
@@ -15,6 +16,7 @@ Show one repeatable pattern for production work with Copilot:
 
 - 01:30-03:30: Guardrails first
   - Open `demo/go/AGENTS.md`.
+  - Open `docs/09-instructions-files-explainer.md` (30-second summary).
   - Show the non-negotiable loop:
     1. smallest diff
     2. run `./scripts/quality_gate.sh`
@@ -25,6 +27,7 @@ Show one repeatable pattern for production work with Copilot:
   - Explain this file tells Copilot to honor `AGENTS.md` before edits.
 
 - 05:00-12:00: Prompt Copilot for a tiny change
+  - Pick a task from `docs/08-micro-change-tasks.md` (easy/medium/hard).
   - Work on `demo/go/internal/probe/service.go`.
   - Ask for a minimal targeted improvement only.
   - Reject broad suggestions; keep one small accepted diff.
@@ -47,9 +50,11 @@ Show one repeatable pattern for production work with Copilot:
 ## Timing fallback
 
 If you get only 15 minutes:
+
 - Show `AGENTS.md`.
 - Do one small change.
 - Run quality gate and stop on green.
 
 If you get only 10 minutes:
+
 - Show `AGENTS.md` + one prompt + one quality gate run.

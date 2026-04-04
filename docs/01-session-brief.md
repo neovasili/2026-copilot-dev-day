@@ -3,6 +3,7 @@
 ## What the website says
 
 From the event pages:
+
 - Date: April 17, 2026.
 - Day schedule: 17:00-20:00.
 - Session 03 runs 18:40-19:40 and is a practical workshop.
@@ -25,4 +26,4 @@ From the event pages:
   - TypeScript: ~19:00-19:20
   - Go: ~19:20-19:40
 
-If organizers shift order on event day, keep the same content but use the fallback timing plan in `docs/02-run-of-show-go-20min.md`.
+If organizers shift order on event day, keep the same content but use the fallback timing plan in [02-run-of-show-go-20min](docs/02-run-of-show-go-20min.md).
