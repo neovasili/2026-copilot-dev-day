@@ -1,39 +1,44 @@
 # Q&A bank for your session
 
-## 1) "Can Copilot write idiomatic Go reliably?"
+## 1) "How do you keep Copilot changes small?"
 
 Answer:
-- Often yes for common patterns, but quality varies by prompt context.
-- Best results come from constraints, tests, and small reviewable edits.
+- Put scope rules in `AGENTS.md`.
+- Prompt explicitly for "smallest possible diff".
+- Reject broad or unrelated edits.
 
-## 2) "How do I avoid over-trusting generated code?"
-
-Answer:
-- Treat suggestions like junior teammate proposals.
-- Ask for acceptance criteria first, then verify with tests and review.
-
-## 3) "Should I prompt in English or Spanish?"
+## 2) "How do you avoid over-trusting generated code?"
 
 Answer:
-- Both work; clarity matters more than language.
-- For technical precision, many teams prefer English identifiers and constraints.
+- We never stop at code generation.
+- We stop only on green quality gates (format, lint, tests).
 
-## 4) "When should I reject a suggestion?"
-
-Answer:
-- Reject when behavior is unclear, complexity increases, or style diverges from team rules.
-
-## 5) "Can Copilot help with tests, not only implementation?"
+## 3) "Why show AGENTS.md first?"
 
 Answer:
-- Yes. Ask for table-driven tests, edge cases, and explicit failure scenarios.
+- It makes conventions explicit and reusable.
+- It aligns everyone: human reviewers and AI assistant.
 
-## 6) "What is the minimum safe workflow?"
-
-Answer:
-- Prompt with constraints -> inspect diff -> run tests -> iterate.
-
-## 7) "What if internet is unstable during demo?"
+## 4) "Is this only for Go?"
 
 Answer:
-- Keep a local backup path: pre-opened files, pre-run tests, and one static walkthrough.
+- No. The pattern is language-agnostic.
+- Replace quality commands with your stack equivalents.
+
+## 5) "What if the quality gate fails repeatedly?"
+
+Answer:
+- Keep changes smaller.
+- Ask Copilot to fix only the specific failing output.
+- Re-run gate after each tiny fix.
+
+## 6) "Can this fit into real team workflows?"
+
+Answer:
+- Yes. Keep `AGENTS.md` in repo, run checks in CI, and mirror the same loop locally.
+
+## 7) "Do I need Agent Mode for this?"
+
+Answer:
+- Agent Mode helps automate the loop.
+- Even without it, the same prompt discipline and manual gate checks still work.

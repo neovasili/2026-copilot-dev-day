@@ -11,15 +11,15 @@ import (
 )
 
 func main() {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
+	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		switch request.URL.Path {
 		case "/ok":
-			w.WriteHeader(http.StatusOK)
+			responseWriter.WriteHeader(http.StatusOK)
 		case "/slow":
 			time.Sleep(75 * time.Millisecond)
-			w.WriteHeader(http.StatusNoContent)
+			responseWriter.WriteHeader(http.StatusNoContent)
 		default:
-			w.WriteHeader(http.StatusNotFound)
+			responseWriter.WriteHeader(http.StatusNotFound)
 		}
 	}))
 	defer testServer.Close()

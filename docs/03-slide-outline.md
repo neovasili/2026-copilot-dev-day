@@ -1,38 +1,32 @@
 # Slide outline for your Go segment
 
-Keep it to 4 slides max. This block is workshop-first.
+Keep it to 4 slides max.
 
-## Slide 1 - What we will do in 20 minutes
+## Slide 1 - The promise
 
-- Build a small Go probe service with Copilot.
-- Validate with tests.
-- Improve readability without losing behavior.
+- Copilot can be fast without becoming risky.
+- Method: smallest possible change + automatic quality gate.
 
 Speaker note:
-- Set expectation: "You can copy this pattern to any Go service in your stack."
+- "The workflow is the product, not the single code snippet."
 
-## Slide 2 - Prompting pattern that works
+## Slide 2 - Guardrails in the repo
 
-- Give context: file + role + constraints.
-- Ask for idiomatic Go and explicit error handling.
-- Request tests or acceptance criteria.
+- `AGENTS.md`: coding rules and mandatory loop.
+- `.github/copilot-instructions.md`: tells Copilot to apply those rules.
+- Team style stays explicit and reusable.
+
+## Slide 3 - Prompt + feedback loop
+
+- Ask for one tiny scoped change.
+- Run quality gate (`./scripts/quality_gate.sh`).
+- If red: fix and repeat until green.
 
 Example prompt:
-- "Implement `ProbeOnce` in Go. Keep context timeout, wrap errors with `%w`, and return deterministic results suitable for table-driven tests."
+- "Apply the smallest diff that improves X in `service.go`, keep behavior stable, then run `./scripts/quality_gate.sh` and iterate until it passes."
 
-## Slide 3 - Human-in-the-loop quality loop
+## Slide 4 - What to reuse tomorrow
 
-- Generate suggestion.
-- Run tests.
-- Accept/reject/refine.
-- Keep project conventions above model convenience.
-
-Speaker note:
-- Mention one rejected suggestion live to model critical review.
-
-## Slide 4 - Reusable takeaways
-
-- Constrain prompts, do not over-specify every line.
-- Use tests as safety rails.
-- Keep changes small and reviewable.
-- Copilot increases speed, not accountability transfer.
+- Keep changes small.
+- Put standards in repo files.
+- Never finish on generated code alone; finish on green checks.

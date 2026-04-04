@@ -1,45 +1,46 @@
 # Attendee handout (Go block)
 
-## Before the session
+## Session focus
 
-- Bring laptop with GitHub Copilot enabled.
-- Use VS Code or JetBrains with Go tooling installed.
-- Have Go 1.22+ available.
+This block is intentionally narrow:
+- tiny code changes
+- strict quality gate after each change
+- iterate until checks are green
 
-## During the block
+## Files we will show
 
-We will do three things:
-1. Inspect a small Go service.
-2. Use Copilot to implement/refine behavior.
-3. Validate with tests and keep only useful suggestions.
+- `demo/go/AGENTS.md`
+- `demo/go/.github/copilot-instructions.md`
+- `demo/go/internal/probe/service.go`
+- `demo/go/internal/probe/service_test.go`
 
-## Commands used
+## Commands used live
 
 ```bash
 cd demo/go
-go test ./...
-go run ./cmd/workshop
+./scripts/quality_gate.sh
 ```
 
-## Prompt pattern you can reuse
+Fallback (if toolchain mismatch appears):
+
+```bash
+cd demo/go
+GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
+```
+
+## Prompt pattern to reuse
 
 ```text
-Task: <what to build>
-Context: <file/module>
-Constraints:
-- idiomatic Go
-- explicit error handling
-- no external deps
-Acceptance criteria:
-- tests pass
-- output deterministic
-- code is readable for team review
+Read AGENTS.md and follow it strictly.
+Apply the smallest possible diff for <task> in <file>.
+Keep behavior stable unless explicitly requested.
+Run ./scripts/quality_gate.sh after editing.
+If checks fail, iterate with minimal fixes until PASS.
+Return only when quality gate is green.
 ```
 
-## After the event
+## What to copy into your real projects
 
-Try this pattern on one real task next week:
-- Pick a small production-adjacent task.
-- Use the constraint template.
-- Validate with tests and code review.
-- Keep a short note of what prompt style worked best.
+- Add an `AGENTS.md` (or equivalent) with style and workflow rules.
+- Keep quality commands explicit and easy to run.
+- Finish only when lint + tests pass.

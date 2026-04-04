@@ -1,70 +1,72 @@
 # Live demo script (Go + Copilot)
 
-Use this as a speaking track. Keep the pace high and practical.
+Use this as a practical speaking track focused on minimal changes and feedback loops.
 
-## 1) Opening (60-90 sec)
+## 1) Opening (60 sec)
 
 Say:
-- "In this block we will use Copilot on real Go code, validate with tests, and keep control with clear constraints."
-- "Goal: useful patterns you can apply today, not a perfect final app."
+- "In this block we optimize for trust: tiny changes, fast checks, repeat until green."
+- "Copilot writes suggestions; quality gates decide if we keep them."
 
-## 2) Show the target file (2 min)
+## 2) Show guardrails before coding (2-3 min)
+
+Open:
+- `demo/go/AGENTS.md`
+- `demo/go/.github/copilot-instructions.md`
+
+Say:
+- "This is how we encode style, testability, and scope in the repo itself."
+- "Our rule: no finished answer without passing the quality gate."
+
+## 3) First micro-task prompt (5-6 min)
 
 Open:
 - `demo/go/internal/probe/service.go`
 
-Say:
-- "This service probes URLs with timeout and returns structured results."
-- "We use an interface so tests do not depend on real networks."
-
-## 3) Prompt Copilot for implementation/refinement (5-6 min)
-
 Prompt A:
 ```text
-Implement or improve ProbeOnce in idiomatic Go.
-Constraints:
-- validate URL and require http/https
-- apply context.WithTimeout
-- wrap external errors with fmt.Errorf("...: %w", err)
-- return deterministic, test-friendly output
-Do not add third-party dependencies.
-```
-
-Prompt B:
-```text
-Review ProbeAll and suggest a bounded worker-pool approach that preserves input order.
-Keep code simple and readable for workshop explanation.
+Read AGENTS.md and follow it strictly.
+Apply the smallest possible diff in service.go to improve readability of ProbeOnce error handling without changing behavior.
+After editing, run ./scripts/quality_gate.sh.
+If anything fails, keep iterating with minimal fixes until the quality gate passes.
+Then summarize changes in 4 bullets.
 ```
 
 Talk track:
-- Read suggestion before accepting.
-- Accept chunks, not entire files at once.
+- Accept only minimal in-scope edits.
+- Reject over-broad refactors.
 
-## 4) Validate (3-4 min)
+## 4) Run and show gate (3 min)
 
 Run:
 ```bash
 cd demo/go
-go test ./...
+./scripts/quality_gate.sh
+```
+
+Fallback (toolchain mismatch):
+```bash
+cd demo/go
+GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 ```
 
 Say:
-- "Green tests are our permission to move fast."
-- "When a suggestion fails, we iterate prompt + code, not blind accept."
+- "Green is the finish line, not generated text."
 
-## 5) Quality pass (2-3 min)
+## 5) Second micro-task prompt (4-5 min)
 
-Prompt C:
+Prompt B:
 ```text
-Propose a small readability refactor without changing behavior.
-List risks before proposing edits.
+Add one small table-driven test that improves edge-case coverage for service.go.
+Keep the change minimal.
+Run ./scripts/quality_gate.sh and iterate until PASS.
 ```
 
 Say:
-- "Useful Copilot usage includes saying no to suggestions that add complexity."
+- "Same loop again. Repeatability is the win."
 
 ## 6) Close (60 sec)
 
 Say:
-- "Three habits: constrain prompts, verify with tests, and keep human judgment in charge."
-- "If you only keep one thing: ask for constraints and acceptance criteria, not just output."
+- "Put standards in files, not only in people’s heads."
+- "Copilot + quality loop gives speed with accountability."

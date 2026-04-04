@@ -5,13 +5,11 @@ Prep materials for Juan Manuel Ruiz Fernandez's Go block in **Session 03** of Gi
 ## Confirmed context from event website
 
 Source pages:
-
 - https://copilot-dev-caceres.vercel.app/index.html
 - https://copilot-dev-caceres.vercel.app/pages/agenda.html
 - https://copilot-dev-caceres.vercel.app/pages/session-03.html
 
 Confirmed details:
-
 - Event date: **Friday, April 17, 2026**
 - Event schedule: **17:00-20:00** (local time)
 - Session 03: **18:40-19:40** (60 min)
@@ -19,39 +17,54 @@ Confirmed details:
 - Go block speaker listed as: **Juan Manuel Ruiz (Juanma)**
 
 Assumption used in this repo:
-
 - You (Juan Manuel Ruiz Fernandez) correspond to the Go speaker listed as Juan Manuel Ruiz.
-- Because the page order is Python -> TypeScript -> Go, your likely live slot is approximately **19:20-19:40** (inferred from the 18:40-19:40 session window).
+- Based on the website order (Python -> TypeScript -> Go), your likely slot is around **19:20-19:40**.
+
+## Session strategy in this repo
+
+The content is optimized for your latest direction:
+- keep code changes minimal
+- enforce a strict prompt -> lint/test -> fix loop
+- show repo-level AI guardrails before coding (`AGENTS.md`)
 
 ## Repo structure
 
 - `docs/01-session-brief.md`: website extract summarized for your slot
 - `docs/02-run-of-show-go-20min.md`: minute-by-minute facilitation plan
-- `docs/03-slide-outline.md`: minimal slide story for a practical workshop
-- `docs/04-live-demo-script.md`: live talking track + Copilot prompt script
-- `docs/05-attendee-handout.md`: participant instructions
+- `docs/03-slide-outline.md`: slide story (guardrails + quality loop)
+- `docs/04-live-demo-script.md`: live talking track + prompt templates
+- `docs/05-attendee-handout.md`: participant handout
 - `docs/06-logistics-checklist.md`: pre-flight checklist
-- `docs/07-qa-bank.md`: high-probability questions + strong answers
-- `demo/go`: runnable Go mini-project for your live block
+- `docs/07-qa-bank.md`: likely Q&A with concise answers
+- `demo/go/AGENTS.md`: prewritten guardrails for Copilot behavior
+- `demo/go/.github/copilot-instructions.md`: Copilot-compatible instruction hook
+- `demo/go/scripts/quality_gate.sh`: format/lint/test quality gate
+- `demo/go`: runnable mini-project for the workshop
 
-## Quick start (demo project)
+## Quick start
 
 ```bash
 cd demo/go
-go test ./...
-go run ./cmd/workshop
+./scripts/quality_gate.sh
 ```
 
-If your local Go setup has toolchain mismatch errors, use:
+Alternative:
 
 ```bash
 cd demo/go
-GOTOOLCHAIN=go1.26.0 go test ./...
-GOTOOLCHAIN=go1.26.0 go run ./cmd/workshop
+make quality
+```
+
+If your machine has a toolchain mismatch, use:
+
+```bash
+cd demo/go
+GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 ```
 
 ## Suggested prep sequence
 
-1. Review `docs/01-session-brief.md` and `docs/02-run-of-show-go-20min.md`.
-2. Rehearse once with `docs/04-live-demo-script.md` and `demo/go`.
-3. Run checklist in `docs/06-logistics-checklist.md` the day before.
+1. Rehearse `docs/04-live-demo-script.md` exactly once with timer.
+2. Start the demo by showing `demo/go/AGENTS.md`.
+3. Perform one micro-change, run quality gate, iterate to green.
+4. Repeat once and close with the 3 takeaways.

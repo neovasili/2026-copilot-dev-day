@@ -32,13 +32,13 @@ func NewService(client HTTPClient, timeout time.Duration) *Service {
 	}
 }
 
-func (s *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, error) {
+func (service *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, error) {
 	if err := validateURL(rawURL); err != nil {
 		wrapped := fmt.Errorf("invalid url %q: %w", rawURL, err)
 		return Result{URL: rawURL, Err: wrapped}, wrapped
 	}
 
-	requestCtx, cancel := context.WithTimeout(ctx, s.timeout)
+	requestCtx, cancel := context.WithTimeout(ctx, service.timeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(requestCtx, http.MethodGet, rawURL, nil)
@@ -48,7 +48,7 @@ func (s *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, error) 
 	}
 
 	start := time.Now()
-	resp, err := s.client.Do(req)
+	resp, err := service.client.Do(req)
 	duration := time.Since(start)
 	if err != nil {
 		wrapped := fmt.Errorf("probe %q: %w", rawURL, err)
@@ -63,7 +63,7 @@ func (s *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, error) 
 	}, nil
 }
 
-func (s *Service) ProbeAll(ctx context.Context, urls []string, workers int) ([]Result, error) {
+func (service *Service) ProbeAll(ctx context.Context, urls []string, workers int) ([]Result, error) {
 	if len(urls) == 0 {
 		return []Result{}, nil
 	}
@@ -92,7 +92,7 @@ func (s *Service) ProbeAll(ctx context.Context, urls []string, workers int) ([]R
 	worker := func() {
 		defer wg.Done()
 		for j := range jobs {
-			result, err := s.ProbeOnce(ctx, j.url)
+			result, err := service.ProbeOnce(ctx, j.url)
 			if err != nil {
 				result.URL = j.url
 				result.Err = err

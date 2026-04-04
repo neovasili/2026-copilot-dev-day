@@ -1,54 +1,50 @@
 # Go workshop demo
 
-This mini-project is tuned for a 20-minute Copilot practical block.
+This mini-project is tuned for a 20-minute Copilot practical block focused on trustable speed.
 
-## Learning goals
+## Core method
 
-- Use Copilot with constraints in a real Go file.
-- Keep behavior safe with tests.
-- Apply idiomatic error handling and bounded concurrency.
+1. Read repo guardrails (`AGENTS.md`).
+2. Ask Copilot for the smallest possible change.
+3. Run the quality gate.
+4. If it fails, iterate until pass.
 
 ## Files to use live
 
+- `AGENTS.md`
+- `.github/copilot-instructions.md`
 - `internal/probe/service.go`
 - `internal/probe/service_test.go`
-- `cmd/workshop/main.go`
+- `scripts/quality_gate.sh`
 
 ## Demo commands
 
 ```bash
-go test ./...
-go run ./cmd/workshop
+cd demo/go
+./scripts/quality_gate.sh
 ```
 
-If your machine reports a toolchain mismatch (for example `compile version ... does not match go tool version ...`), pin one matching toolchain explicitly:
+Alternative:
 
 ```bash
-GOTOOLCHAIN=go1.26.0 go test ./...
-GOTOOLCHAIN=go1.26.0 go run ./cmd/workshop
+cd demo/go
+make quality
 ```
 
-## Suggested live flow
+If your machine reports a toolchain mismatch (for example `compile version ... does not match go tool version ...`), pin one toolchain explicitly:
 
-1. Open `service.go` and explain the problem.
-2. Prompt Copilot to refine `ProbeOnce` and `ProbeAll`.
-3. Run tests.
-4. Do a short readability pass and recap.
-
-## Prompt starters
-
-```text
-Implement/refine ProbeOnce with these constraints:
-- validate URL (http/https)
-- timeout with context.WithTimeout
-- wrap errors with %w
-- keep output deterministic and test-friendly
+```bash
+cd demo/go
+GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 ```
 
+## Prompt starter
+
 ```text
-Suggest a simple worker-pool implementation for ProbeAll.
-Requirements:
-- preserve input order
-- bounded workers
-- clear code for workshop explanation
+Read AGENTS.md and follow it strictly.
+Apply the smallest possible diff for <task> in <file>.
+Keep behavior stable unless explicitly requested.
+Run ./scripts/quality_gate.sh after editing.
+If checks fail, iterate with minimal fixes until PASS.
+Return only when quality gate is green.
 ```

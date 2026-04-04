@@ -24,8 +24,8 @@ func TestProbeOnceInvalidURL(t *testing.T) {
 }
 
 func TestProbeOnceReturnsStatusCode(t *testing.T) {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusAccepted)
+	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		responseWriter.WriteHeader(http.StatusAccepted)
 	}))
 	defer testServer.Close()
 
@@ -44,15 +44,15 @@ func TestProbeOnceReturnsStatusCode(t *testing.T) {
 }
 
 func TestProbeAllPreservesInputOrder(t *testing.T) {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
+	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		switch request.URL.Path {
 		case "/slow":
 			time.Sleep(40 * time.Millisecond)
-			w.WriteHeader(http.StatusNoContent)
+			responseWriter.WriteHeader(http.StatusNoContent)
 		case "/fast":
-			w.WriteHeader(http.StatusOK)
+			responseWriter.WriteHeader(http.StatusOK)
 		default:
-			w.WriteHeader(http.StatusNotFound)
+			responseWriter.WriteHeader(http.StatusNotFound)
 		}
 	}))
 	defer testServer.Close()
@@ -89,8 +89,8 @@ func TestProbeAllPreservesInputOrder(t *testing.T) {
 }
 
 func TestProbeAllReturnsErrorWhenAnyProbeFails(t *testing.T) {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
+	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		responseWriter.WriteHeader(http.StatusOK)
 	}))
 	defer testServer.Close()
 
@@ -110,9 +110,9 @@ func TestProbeAllReturnsErrorWhenAnyProbeFails(t *testing.T) {
 }
 
 func TestProbeAllReturnsContextErrorWhenCancelled(t *testing.T) {
-	blockingServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	blockingServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		time.Sleep(300 * time.Millisecond)
-		w.WriteHeader(http.StatusOK)
+		responseWriter.WriteHeader(http.StatusOK)
 	}))
 	defer blockingServer.Close()
 
@@ -130,8 +130,8 @@ func TestProbeAllReturnsContextErrorWhenCancelled(t *testing.T) {
 }
 
 func ExampleService_ProbeAll() {
-	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
+	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		responseWriter.WriteHeader(http.StatusOK)
 	}))
 	defer testServer.Close()
 

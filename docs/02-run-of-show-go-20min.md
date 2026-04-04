@@ -2,49 +2,54 @@
 
 ## Goal
 
-In 20 minutes, attendees should see a complete mini workflow:
-1. Ask Copilot for a focused Go implementation.
-2. Verify behavior with tests.
-3. Refine code to align with idiomatic Go.
+Show one repeatable pattern for production work with Copilot:
+- minimal scoped change
+- mandatory quality gate (lint + tests)
+- iterate until green
 
 ## Minute-by-minute plan
 
 - 00:00-01:30: Framing
-  - State one outcome: "we will build a small HTTP probe service with tests and a concurrency option."
-  - Remind audience this is practical: short prompts, quick validation.
+  - "Today is not about big refactors."
+  - "It is about small diffs + continuous verification."
 
-- 01:30-04:00: Context setup
-  - Open `demo/go/internal/probe/service.go`.
-  - Explain the `HTTPClient` interface and why this keeps code testable.
-  - Mention success criteria: valid URL handling, timeout, preserved order in batch probes.
+- 01:30-03:30: Guardrails first
+  - Open `demo/go/AGENTS.md`.
+  - Show the non-negotiable loop:
+    1. smallest diff
+    2. run `./scripts/quality_gate.sh`
+    3. if fail, fix and repeat until pass
 
-- 04:00-10:00: Build with Copilot
-  - Use Copilot Chat to generate/refine `ProbeOnce`.
-  - Focus points: wrapped errors (`%w`), `context.WithTimeout`, clear return values.
-  - Run `go test ./...`.
+- 03:30-05:00: Show instruction wiring
+  - Open `demo/go/.github/copilot-instructions.md`.
+  - Explain this file tells Copilot to honor `AGENTS.md` before edits.
 
-- 10:00-15:30: Batch probing and light concurrency
-  - Walk through `ProbeAll`.
-  - Emphasize bounded workers and stable output order.
-  - Re-run tests and show that behavior is still deterministic.
+- 05:00-12:00: Prompt Copilot for a tiny change
+  - Work on `demo/go/internal/probe/service.go`.
+  - Ask for a minimal targeted improvement only.
+  - Reject broad suggestions; keep one small accepted diff.
 
-- 15:30-18:30: Idiomatic cleanup pass
-  - Ask Copilot for a readability pass without changing behavior.
-  - Show one accepted suggestion and one rejected suggestion.
-  - Reinforce: Copilot assists, developer decides.
+- 12:00-15:30: Enforce quality gate
+  - Run `./scripts/quality_gate.sh` (or `make quality`).
+  - If it fails, keep prompting for minimal fixes.
+  - End this section only when gate passes.
 
-- 18:30-20:00: Close + takeaways
-  - 3 practical takeaways:
-    - Ask for constraints, not only outcomes.
-    - Keep a red/green loop with tests.
-    - Use Go tooling (`go test`, `go fmt`) as guardrails.
+- 15:30-18:30: One more micro-change
+  - Do a second tiny enhancement (e.g., error message clarity or test edge case).
+  - Re-run gate and confirm green again.
 
-## Timing fallback (if previous block overruns)
+- 18:30-20:00: Close
+  - 3 takeaways:
+    - Small diffs are easier to trust.
+    - AI speed must be paired with automated checks.
+    - Team conventions belong in repo-level instructions (`AGENTS.md` or similar).
+
+## Timing fallback
 
 If you get only 15 minutes:
-- Keep `ProbeOnce` + tests.
-- Explain `ProbeAll` conceptually without full code walk.
-- Show one concurrency snippet and move to Q&A.
+- Show `AGENTS.md`.
+- Do one small change.
+- Run quality gate and stop on green.
 
 If you get only 10 minutes:
-- Show one single-file flow (`ProbeOnce`), one test run, and one prompt pattern attendees can reuse.
+- Show `AGENTS.md` + one prompt + one quality gate run.
