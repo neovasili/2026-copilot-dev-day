@@ -51,7 +51,7 @@ The content is optimized for your latest direction:
 
 - GitHub account with GitHub Copilot access
 - IDE with Copilot enabled (VS Code or JetBrains recommended)
-- Go installed (1.22+; tested in this repo with 1.26.0)
+- Go installed (1.26+)
 - `gofmt` and `go vet` available in `PATH` (included with Go)
 - `make` (optional, only for `make quality`)
 
