@@ -18,14 +18,9 @@ Confirmed details:
 - Session 03 format: practical workshop with three blocks of about 20 minutes each
 - Go block speaker listed as: **Juan Manuel Ruiz (Juanma)**
 
-Assumption used in this repo:
-
-- You (Juan Manuel Ruiz Fernandez) correspond to the Go speaker listed as Juan Manuel Ruiz.
-- Based on the website order (Python -> TypeScript -> Go), your likely slot is around **19:20-19:40**.
-
 ## Session strategy in this repo
 
-The content is optimized for your latest direction:
+The content is optimized for:
 
 - keep code changes minimal
 - enforce a strict prompt -> lint/test -> fix loop
@@ -33,15 +28,8 @@ The content is optimized for your latest direction:
 
 ## Repo structure
 
-- `docs/01-session-brief.md`: website extract summarized for your slot
-- `docs/02-run-of-show-go-20min.md`: minute-by-minute facilitation plan
-- `docs/03-slide-outline.md`: slide story (guardrails + quality loop)
-- `docs/04-live-demo-script.md`: live talking track + prompt templates
-- `docs/05-attendee-handout.md`: participant handout
-- `docs/06-logistics-checklist.md`: pre-flight checklist
-- `docs/07-qa-bank.md`: likely Q&A with concise answers
-- `docs/08-micro-change-tasks.md`: concrete easy/medium/hard tasks for live selection
-- `docs/09-instructions-files-explainer.md`: `AGENTS.md` vs `copilot-instructions.md` purpose and tradeoffs
+- `docs/live-demo-script.md`: single demo playbook (run of show + talk track + instruction-file explainer)
+- `docs/micro-change-tasks.md`: concrete easy/medium/hard tasks for live selection
 - `demo/go/AGENTS.md`: prewritten guardrails for Copilot behavior
 - `demo/go/.github/copilot-instructions.md`: Copilot-compatible instruction hook
 - `demo/go/scripts/quality_gate.sh`: format/lint/test quality gate
@@ -78,8 +66,8 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 
 ## Suggested prep sequence
 
-1. Rehearse `docs/04-live-demo-script.md` exactly once with timer.
-2. Start the demo by showing `docs/09-instructions-files-explainer.md` and `demo/go/AGENTS.md`.
-3. Pick one task from `docs/08-micro-change-tasks.md` (easy/medium/hard).
+1. Rehearse `docs/live-demo-script.md` exactly once with timer.
+2. Start the demo by showing `demo/go/AGENTS.md` and `demo/go/.github/copilot-instructions.md`.
+3. Pick one task from `docs/micro-change-tasks.md` (easy/medium/hard).
 4. Perform one micro-change, run quality gate, iterate to green.
 5. If time allows, repeat with a second task and close with takeaways.

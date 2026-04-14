@@ -9,13 +9,13 @@ This mini-project is tuned for a 20-minute Copilot practical block focused on tr
 3. Run the quality gate.
 4. If it fails, iterate until pass.
 
+For the full run-of-show and speaking track, use:
+
+- [live-demo-script.md](../../docs/live-demo-script.md)
+
 For live selection by difficulty, use:
 
-- [08-micro-change-tasks.md](../../docs/08-micro-change-tasks.md)
-
-For the short explanation of instruction files, use:
-
-- [09-instructions-files-explainer.md](../../docs/09-instructions-files-explainer.md)
+- [micro-change-tasks.md](../../docs/micro-change-tasks.md)
 
 ## Files to use live
 
