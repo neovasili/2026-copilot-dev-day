@@ -1,5 +1,8 @@
 # Copilot Dev Days Caceres - Session Prep Repo
 
+[![Quality Gate](https://github.com/neovasili/2026-copilot-dev-day/actions/workflows/quality.yml/badge.svg)](https://github.com/neovasili/2026-copilot-dev-day/actions/workflows/quality.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=neovasili_2026-copilot-dev-day&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=neovasili_2026-copilot-dev-day)
+
 Prep materials for Juan Manuel Ruiz Fernandez's Go block in **Session 03** of GitHub Copilot Developer Days (Caceres edition).
 
 ## Confirmed context from event website

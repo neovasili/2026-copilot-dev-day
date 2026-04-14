@@ -43,5 +43,7 @@ jobs:
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.1.0
+        with:
+          projectBaseDir: ./demo/go
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
