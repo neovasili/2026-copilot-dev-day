@@ -5,6 +5,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 jobs:
   quality-gate:
@@ -21,3 +24,26 @@ jobs:
         working-directory: demo/go
         run: |
           make quality
+
+  sonar:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+
+      - name: Run tests with coverage
+        working-directory: demo/go
+        run: |
+          mkdir -p coverage
+          go test -v ./... -coverprofile=coverage/coverage.out
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v7.1.0
+        with:
+          projectBaseDir: ./demo/go
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

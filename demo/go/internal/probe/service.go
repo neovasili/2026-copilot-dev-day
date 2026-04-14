@@ -10,19 +10,24 @@ import (
 	"time"
 )
 
-// HTTPClient keeps networking replaceable in tests and demos.
-type HTTPClient interface {
+// HttpClient keeps networking replaceable in tests and demos.
+type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
 // Service probes HTTP endpoints with timeout and bounded concurrency.
 type Service struct {
-	client  HTTPClient
+	client  HttpClient
 	timeout time.Duration
 }
 
+type probeJob struct {
+	index int
+	url   string
+}
+
 // NewService creates a new Service with the given HTTP client and timeout.
-func NewService(client HTTPClient, timeout time.Duration) *Service {
+func NewService(client HttpClient, timeout time.Duration) *Service {
 	if timeout <= 0 {
 		timeout = 2 * time.Second
 	}
@@ -76,66 +81,83 @@ func (service *Service) ProbeAll(ctx context.Context, urls []string, workers int
 		return []Result{}, nil
 	}
 
-	if workers <= 0 {
-		workers = 1
-	}
-	if workers > len(urls) {
-		workers = len(urls)
-	}
+	workers = normalizeWorkerCount(workers, len(urls))
 
-	type job struct {
-		index int
-		url   string
-	}
-
-	jobs := make(chan job)
+	jobs := make(chan probeJob)
 	results := make([]Result, len(urls))
 
 	var (
-		wg       sync.WaitGroup
-		mu       sync.Mutex
-		firstErr error
+		waitGroup sync.WaitGroup
+		mutex     sync.Mutex
+		firstErr  error
 	)
 
-	worker := func() {
-		defer wg.Done()
-		for j := range jobs {
-			result, err := service.ProbeOnce(ctx, j.url)
-			if err != nil {
-				result.URL = j.url
-				result.Err = err
-			}
-
-			mu.Lock()
-			results[j.index] = result
-			if err != nil && firstErr == nil {
-				firstErr = err
-			}
-			mu.Unlock()
-		}
+	waitGroup.Add(workers)
+	for workerIndex := 0; workerIndex < workers; workerIndex++ {
+		go service.probeWorker(ctx, jobs, results, &firstErr, &mutex, &waitGroup)
 	}
 
-	wg.Add(workers)
-	for i := 0; i < workers; i++ {
-		go worker()
-	}
-
-	for i, rawURL := range urls {
+	for index, rawURL := range urls {
 		select {
 		case <-ctx.Done():
 			close(jobs)
-			wg.Wait()
-			if firstErr != nil {
-				return results, errors.Join(ctx.Err(), firstErr)
-			}
-			return results, ctx.Err()
-		case jobs <- job{index: i, url: rawURL}:
+			waitGroup.Wait()
+			return results, combineProbeAllErrors(ctx.Err(), firstErr)
+		case jobs <- probeJob{index: index, url: rawURL}:
 		}
 	}
 
 	close(jobs)
-	wg.Wait()
+	waitGroup.Wait()
 	return results, firstErr
+}
+
+// normalizeWorkerCount ensures the worker count is between 1 and the number of URLs.
+func normalizeWorkerCount(workers, urlCount int) int {
+	if workers <= 0 {
+		return 1
+	}
+	if workers > urlCount {
+		return urlCount
+	}
+
+	return workers
+}
+
+// combineProbeAllErrors combines the context error with the first probe error, if any.
+func combineProbeAllErrors(contextError, firstErr error) error {
+	if firstErr != nil {
+		return errors.Join(contextError, firstErr)
+	}
+
+	return contextError
+}
+
+// probeWorker is a worker function that processes probe jobs and stores results.
+func (service *Service) probeWorker(
+	ctx context.Context,
+	jobs <-chan probeJob,
+	results []Result,
+	firstErr *error,
+	mutex *sync.Mutex,
+	waitGroup *sync.WaitGroup,
+) {
+	defer waitGroup.Done()
+
+	for job := range jobs {
+		result, err := service.ProbeOnce(ctx, job.url)
+		if err != nil {
+			result.URL = job.url
+			result.Err = err
+		}
+
+		mutex.Lock()
+		results[job.index] = result
+		if err != nil && *firstErr == nil {
+			*firstErr = err
+		}
+		mutex.Unlock()
+	}
 }
 
 // validateURL checks if the provided URL is valid and uses a supported scheme.

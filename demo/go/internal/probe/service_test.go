@@ -23,6 +23,126 @@ func TestProbeOnceInvalidURL(t *testing.T) {
 	}
 }
 
+func TestServiceTimeout(t *testing.T) {
+	testCases := []struct {
+		name              string
+		configuredTimeout time.Duration
+		wantTimeout       time.Duration
+	}{
+		{
+			name:              "returns configured timeout",
+			configuredTimeout: 450 * time.Millisecond,
+			wantTimeout:       450 * time.Millisecond,
+		},
+		{
+			name:              "defaults to 2 seconds when zero",
+			configuredTimeout: 0,
+			wantTimeout:       2 * time.Second,
+		},
+		{
+			name:              "defaults to 2 seconds when negative",
+			configuredTimeout: -1 * time.Second,
+			wantTimeout:       2 * time.Second,
+		},
+	}
+
+	for _, testCase := range testCases {
+		testCase := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			service := NewService(http.DefaultClient, testCase.configuredTimeout)
+
+			if gotTimeout := service.Timeout(); gotTimeout != testCase.wantTimeout {
+				t.Fatalf("unexpected timeout: want %s, got %s", testCase.wantTimeout, gotTimeout)
+			}
+		})
+	}
+}
+
+func TestNormalizeWorkerCount(t *testing.T) {
+	testCases := []struct {
+		name       string
+		workers    int
+		urlCount   int
+		wantWorker int
+	}{
+		{
+			name:       "defaults to one when workers is zero",
+			workers:    0,
+			urlCount:   3,
+			wantWorker: 1,
+		},
+		{
+			name:       "defaults to one when workers is negative",
+			workers:    -2,
+			urlCount:   3,
+			wantWorker: 1,
+		},
+		{
+			name:       "caps workers to url count",
+			workers:    5,
+			urlCount:   2,
+			wantWorker: 2,
+		},
+		{
+			name:       "keeps workers within bounds",
+			workers:    2,
+			urlCount:   5,
+			wantWorker: 2,
+		},
+	}
+
+	for _, testCase := range testCases {
+		testCase := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			if gotWorker := normalizeWorkerCount(testCase.workers, testCase.urlCount); gotWorker != testCase.wantWorker {
+				t.Fatalf("unexpected worker count: want %d, got %d", testCase.wantWorker, gotWorker)
+			}
+		})
+	}
+}
+
+func TestCombineProbeAllErrors(t *testing.T) {
+	probeErr := errors.New("probe failed")
+
+	testCases := []struct {
+		name        string
+		contextErr  error
+		firstErr    error
+		wantContext bool
+		wantProbe   bool
+	}{
+		{
+			name:        "returns context error when probe error is nil",
+			contextErr:  context.DeadlineExceeded,
+			firstErr:    nil,
+			wantContext: true,
+			wantProbe:   false,
+		},
+		{
+			name:        "joins context and probe errors",
+			contextErr:  context.DeadlineExceeded,
+			firstErr:    probeErr,
+			wantContext: true,
+			wantProbe:   true,
+		},
+	}
+
+	for _, testCase := range testCases {
+		testCase := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			err := combineProbeAllErrors(testCase.contextErr, testCase.firstErr)
+
+			if errors.Is(err, context.DeadlineExceeded) != testCase.wantContext {
+				t.Fatalf("unexpected context error membership: want %t", testCase.wantContext)
+			}
+
+			if errors.Is(err, probeErr) != testCase.wantProbe {
+				t.Fatalf("unexpected probe error membership: want %t", testCase.wantProbe)
+			}
+		})
+	}
+}
+
 func TestProbeOnceReturnsStatusCode(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		responseWriter.WriteHeader(http.StatusAccepted)
