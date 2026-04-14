@@ -1,0 +1,23 @@
+---
+name: Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  quality-gate:
+    name: Run Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+
+      - name: Run quality gate script
+        working-directory: demo/go
+        run: |
+          make quality

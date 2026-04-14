@@ -45,6 +45,6 @@ printf "\n${MAGENTA}Linting (go vet ./...)${RESET}\n"
 go vet ./...
 
 printf "\n${MAGENTA}Running tests (go test ./...)${RESET}\n"
-go test ./...
+grc go test ./... -v || go test ./... -v # Fallback to non-colored output if grc is missing
 
 printf "\n${GREY}QUALITY GATE: ${GREEN}✅ PASS${RESET}\n"

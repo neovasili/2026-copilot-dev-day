@@ -1,0 +1,25 @@
+# go-test grc colorizer configuration
+
+regexp=^=== RUN\s+.*
+colours=bright_blue
+-
+regexp=^--- PASS:\s+.*\(\d+(\.\d+)?s\)$
+colours=green
+-
+regexp=^--- FAIL:\s+.*\(\d+(\.\d+)?s\)$
+colours=red
+-
+regexp=^PASS$
+colours=bold white on_green
+-
+regexp=^FAIL$
+colours=bold white on_red
+-
+regexp=^(ok)\s+.*
+colours=magenta
+-
+regexp=^(FAIL)\s+.*
+colours=bold red
+-
+regexp=[^\s]+\.go(:\d+)?
+colours=cyan

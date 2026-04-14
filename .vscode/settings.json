@@ -1,5 +1,6 @@
 {
   "chat.tools.terminal.autoApprove": {
-    "./scripts/quality_gate.sh": true
+    "./scripts/quality_gate.sh": true,
+    "make quality": true
   }
 }
