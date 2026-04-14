@@ -23,6 +23,41 @@ func TestProbeOnceInvalidURL(t *testing.T) {
 	}
 }
 
+func TestServiceTimeout(t *testing.T) {
+	testCases := []struct {
+		name              string
+		configuredTimeout time.Duration
+		wantTimeout       time.Duration
+	}{
+		{
+			name:              "returns configured timeout",
+			configuredTimeout: 450 * time.Millisecond,
+			wantTimeout:       450 * time.Millisecond,
+		},
+		{
+			name:              "defaults to 2 seconds when zero",
+			configuredTimeout: 0,
+			wantTimeout:       2 * time.Second,
+		},
+		{
+			name:              "defaults to 2 seconds when negative",
+			configuredTimeout: -1 * time.Second,
+			wantTimeout:       2 * time.Second,
+		},
+	}
+
+	for _, testCase := range testCases {
+		testCase := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			service := NewService(http.DefaultClient, testCase.configuredTimeout)
+
+			if gotTimeout := service.Timeout(); gotTimeout != testCase.wantTimeout {
+				t.Fatalf("unexpected timeout: want %s, got %s", testCase.wantTimeout, gotTimeout)
+			}
+		})
+	}
+}
+
 func TestProbeOnceReturnsStatusCode(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
 		responseWriter.WriteHeader(http.StatusAccepted)
