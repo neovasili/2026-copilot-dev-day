@@ -21,6 +21,7 @@ type Service struct {
 	timeout time.Duration
 }
 
+// NewService creates a new Service with the given HTTP client and timeout.
 func NewService(client HTTPClient, timeout time.Duration) *Service {
 	if timeout <= 0 {
 		timeout = 2 * time.Second
@@ -32,6 +33,12 @@ func NewService(client HTTPClient, timeout time.Duration) *Service {
 	}
 }
 
+// Timeout returns the configured timeout for probes.
+func (service *Service) Timeout() time.Duration {
+	return service.timeout
+}
+
+// ProbeOnce performs a single probe to the given URL and returns the result.
 func (service *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, error) {
 	if err := validateURL(rawURL); err != nil {
 		wrapped := fmt.Errorf("invalid url %q: %w", rawURL, err)
@@ -63,6 +70,7 @@ func (service *Service) ProbeOnce(ctx context.Context, rawURL string) (Result, e
 	}, nil
 }
 
+// ProbeAll performs probes to all given URLs with the specified concurrency level.
 func (service *Service) ProbeAll(ctx context.Context, urls []string, workers int) ([]Result, error) {
 	if len(urls) == 0 {
 		return []Result{}, nil
@@ -130,6 +138,7 @@ func (service *Service) ProbeAll(ctx context.Context, urls []string, workers int
 	return results, firstErr
 }
 
+// validateURL checks if the provided URL is valid and uses a supported scheme.
 func validateURL(rawURL string) error {
 	parsed, err := url.ParseRequestURI(rawURL)
 	if err != nil {

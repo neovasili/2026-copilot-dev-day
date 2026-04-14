@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/copilot-dev-caceres/go-probe-demo/internal/probe"
+	"github.com/copilot-dev-caceres/go-probe-demo/internal/tools"
 )
 
 func main() {
@@ -17,6 +18,9 @@ func main() {
 			responseWriter.WriteHeader(http.StatusOK)
 		case "/slow":
 			time.Sleep(75 * time.Millisecond)
+			responseWriter.WriteHeader(http.StatusNoContent)
+		case "/timeout":
+			time.Sleep(150 * time.Millisecond)
 			responseWriter.WriteHeader(http.StatusNoContent)
 		default:
 			responseWriter.WriteHeader(http.StatusNotFound)
@@ -28,14 +32,33 @@ func main() {
 	urls := []string{
 		testServer.URL + "/ok",
 		testServer.URL + "/slow",
+		testServer.URL + "/timeout",
 		testServer.URL + "/missing",
 		"not-a-url",
+		"ftp://wrong-scheme-url",
 	}
+	fmt.Println(
+		tools.Magenta(fmt.Sprintf("\nProbing %d urls with concurrency 2 and timeout %s\n", len(urls), svc.Timeout())),
+	)
 
 	results, err := svc.ProbeAll(context.Background(), urls, 2)
-	fmt.Printf("batch error: %v\n", err)
+	if err != nil {
+		fmt.Println(tools.Red(fmt.Sprintf("Batch error: %v", err)))
+	}
 
 	for _, result := range results {
-		fmt.Printf("url=%-30s status=%3d duration=%s err=%v\n", result.URL, result.StatusCode, result.Duration.Truncate(time.Millisecond), result.Err)
+		if result.Err != nil {
+			fmt.Println(
+				tools.Red(
+					fmt.Sprintf("url=%-30s status=%3d duration=%s err=%v", result.URL, result.StatusCode, result.Duration.Truncate(time.Millisecond), result.Err),
+				),
+			)
+			continue
+		}
+		fmt.Println(
+			tools.Green(
+				fmt.Sprintf("url=%-30s status=%3d duration=%s", result.URL, result.StatusCode, result.Duration.Truncate(time.Millisecond)),
+			),
+		)
 	}
 }
