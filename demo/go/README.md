@@ -1,38 +1,56 @@
-# Go workshop demo
+# Go HTTP Probe Demo
 
-This mini-project is tuned for a 20-minute Copilot practical block focused on trustable speed.
+This project implements a small HTTP probing service and a runnable example.
+It is designed to be simple, testable, and idiomatic Go.
 
-## Session focus
+## What the project does
 
-- packages and modules in real context (`go.mod` + package structure)
-- interfaces and idiomatic error handling (wrapping and testability)
-- lightweight concurrency when it adds value
-- Copilot for tests, small refactors, and stdlib exploration without leaving the editor
+- probes one URL and reports status code, duration, and error
+- probes multiple URLs with bounded concurrency
+- preserves input order in batch results
+- validates URLs before sending requests
+- supports cancellation and per-request timeout via context
 
-## Core method
+## How it is organized
 
-1. Read repo guardrails (`AGENTS.md`).
-2. Ask Copilot for the smallest possible change.
-3. Run the quality gate.
-4. If it fails, iterate until pass.
+- `cmd/workshop/main.go`: runnable example that starts a local test server and probes several URLs
+- `internal/probe/service.go`: core `Service` implementation (`ProbeOnce`, `ProbeAll`, URL validation)
+- `internal/probe/result.go`: `Result` model returned per URL
+- `internal/probe/service_test.go`: unit and behavior tests
+- `scripts/quality_gate.sh`: format, vet, and test checks
 
-For the full run-of-show and speaking track, use:
+## How it works
 
-- [live-demo-script.md](../../docs/live-demo-script.md)
+### `ProbeOnce`
 
-For live selection by difficulty, use:
+1. Validates the input URL.
+2. Creates a request-scoped timeout context.
+3. Builds a `GET` request and executes it through the injected `HTTPClient` interface.
+4. Returns a `Result` with URL, status code, duration, and any wrapped error.
 
-- [micro-change-tasks.md](../../docs/micro-change-tasks.md)
+### `ProbeAll`
 
-## Files to use live
+1. Normalizes worker count.
+2. Sends indexed jobs to a worker pool through a channel.
+3. Each worker calls `ProbeOnce`.
+4. Stores each result at the original index to keep deterministic order.
+5. Returns all results and a batch error when failures occur.
 
-- `AGENTS.md`
-- `.github/copilot-instructions.md`
-- `internal/probe/service.go`
-- `internal/probe/service_test.go`
-- `scripts/quality_gate.sh`
+## Run the example
 
-## Demo commands
+```bash
+cd demo/go
+go run ./cmd/workshop
+```
+
+The example prints a batch error plus one line per URL including status, duration, and per-item error.
+
+## Run tests and checks
+
+```bash
+cd demo/go
+go test ./...
+```
 
 ```bash
 cd demo/go
@@ -46,20 +64,9 @@ cd demo/go
 make quality
 ```
 
-If your machine reports a toolchain mismatch (for example `compile version ... does not match go tool version ...`), pin one toolchain explicitly:
+If your machine reports a toolchain mismatch, pin one toolchain explicitly:
 
 ```bash
 cd demo/go
 GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
-```
-
-## Prompt starter
-
-```text
-Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff for one focused task in tests, refactor, or error/concurrency handling.
-Keep behavior stable unless explicitly requested and prefer idiomatic Go conventions.
-Run ./scripts/quality_gate.sh after editing.
-If checks fail, iterate with minimal fixes until PASS.
-Return only when quality gate is green.
 ```
