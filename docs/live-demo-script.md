@@ -1,58 +1,71 @@
 # Live demo script (Go + Copilot)
 
-This is the single demo-first playbook for your Go block.
-If you only open one prep doc, use this one.
+This is the main playbook for your Go segment.
+If you only open one prep file before the session, use this one.
 
-## Demo objective
+## Block objective
 
-Show one repeatable pattern for production work with Copilot:
+Show a repeatable workflow for using Copilot in Go while staying idiomatic:
 
-- minimal scoped change
-- mandatory quality gate (format + lint + tests)
-- iterate until green
+- clear code aligned with Go conventions
+- small, verifiable changes
+- mandatory quality gate after each change
 
-## Files to keep open during the demo
+## Topics to cover
+
+- packages and modules (quick read of `go.mod` and folder structure)
+- interfaces and idiomatic error handling (`%w`, `errors.Is`, useful context)
+- lightweight concurrency when it adds value (workers, `context`, cancellation)
+- Copilot usage inside the editor for:
+  - completing tests
+  - refactoring small functions
+  - exploring stdlib options without leaving the editor
+- final time for tooling questions (`gofmt`, tests, modules)
+
+## Files to keep open
 
 - `demo/go/AGENTS.md`
 - `demo/go/.github/copilot-instructions.md`
 - `docs/micro-change-tasks.md`
+- `demo/go/go.mod`
 - `demo/go/internal/probe/service.go`
 - `demo/go/internal/probe/service_test.go`
 
 ## 20-minute run of show
 
 - 00:00-01:30: Opening
-	- "In this block we optimize for trust: tiny changes, fast checks, repeat until green."
-	- "Copilot writes suggestions; quality gates decide if we keep them."
+  - "Today we prioritize idiomatic Go and clear code."
+  - "Copilot can accelerate delivery, but quality is decided by the gate."
 
-- 01:30-03:30: Guardrails first
-	- Open `demo/go/AGENTS.md`.
-	- Open `demo/go/.github/copilot-instructions.md`.
-	- Explain the loop:
-		1. smallest diff
-		2. run `./scripts/quality_gate.sh`
-		3. if fail, fix and repeat until pass
+- 01:30-04:00: Go context
+  - Show `go.mod` and package structure.
+  - Explain in 30 seconds how this connects to imports, tests, and modules.
 
-- 03:30-05:00: 30-second instruction file explainer
-	- `AGENTS.md` = behavior contract (scope, style, tests, stop condition).
-	- `copilot-instructions.md` = integration point that makes Copilot load repo instructions by default.
-	- One-line summary: "`AGENTS.md` defines the rules; `copilot-instructions.md` makes Copilot apply them automatically."
+- 04:00-06:00: Guardrails + working contract
+  - Open `demo/go/AGENTS.md` and `demo/go/.github/copilot-instructions.md`.
+  - Repeat the mandatory loop:
+    1. minimal change
+    2. run `./scripts/quality_gate.sh`
+    3. if it fails, fix and repeat
 
-- 05:00-12:00: First micro-change
-	- Pick Easy/Medium/Hard from `docs/micro-change-tasks.md` based on remaining time.
-	- Accept only minimal in-scope edits.
-	- Reject broad refactors.
+- 06:00-12:30: Micro-change 1 (tests or error handling)
+  - Choose an Easy or Medium task from `docs/micro-change-tasks.md`.
+  - Emphasize interfaces and idiomatic error handling while Copilot proposes changes.
+  - Accept only small, readable diffs.
 
-- 12:00-15:30: Enforce quality gate
-	- Run quality gate and iterate to green.
-	- Say: "Green is the finish line, not generated text."
+- 12:30-15:30: Quality and verification
+  - Run the quality gate.
+  - If it fails, iterate live with a single focused correction.
 
-- 15:30-18:30: Optional second micro-change
-	- Do one more tiny enhancement and re-run the gate.
+- 15:30-18:00: Optional micro-change 2 (light concurrency or refactor)
+  - Choose a Hard task only if time allows.
+  - Reinforce that concurrency should be used where it adds value, not for complexity.
 
-- 18:30-20:00: Close
-	- "Put standards in files, not only in people’s heads."
-	- "Copilot + quality loop gives speed with accountability."
+- 18:00-20:00: Closing + tooling Q&A
+  - Leave room for questions: `gofmt`, tests, modules, package organization.
+  - Suggested closing:
+    - "Speed without quality does not scale."
+    - "Copilot + conventions + checks gives teams a reusable workflow."
 
 ## Prompt starters
 
@@ -60,18 +73,26 @@ Prompt A:
 
 ```text
 Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff in service.go to improve readability of ProbeOnce error handling without changing behavior.
-After editing, run ./scripts/quality_gate.sh.
-If anything fails, keep iterating with minimal fixes until the quality gate passes.
-Then summarize changes in 4 bullets.
+Complete or improve table-driven tests in service_test.go for one edge case in URL validation or error handling.
+Keep changes minimal and idiomatic.
+After editing, run ./scripts/quality_gate.sh and iterate until PASS.
 ```
 
 Prompt B:
 
 ```text
-Add one small table-driven test that improves edge-case coverage for service.go.
-Keep the change minimal.
+Read AGENTS.md and follow it strictly.
+Refactor one small function in service.go to improve readability while preserving behavior.
+Keep error wrapping with %w and avoid broad refactors.
 Run ./scripts/quality_gate.sh and iterate until PASS.
+```
+
+Prompt C:
+
+```text
+Read AGENTS.md and follow it strictly.
+From the current code in service.go, explain which stdlib APIs are central (context, net/http, errors, sync) and propose one minimal improvement.
+Apply only that improvement and run ./scripts/quality_gate.sh until PASS.
 ```
 
 ## Commands to run live
@@ -92,12 +113,12 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 
 If you get only 15 minutes:
 
-- show guardrails
-- do one micro-change
-- finish on green quality gate
+- show modules/packages in 30 seconds
+- do one micro-change (tests or errors)
+- finish on a green quality gate
 
 If you get only 10 minutes:
 
 - show `AGENTS.md`
-- run one prompt
-- run one quality gate
+- run one short prompt
+- run the quality gate once

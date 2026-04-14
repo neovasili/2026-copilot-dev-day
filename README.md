@@ -22,9 +22,11 @@ Confirmed details:
 
 The content is optimized for:
 
-- keep code changes minimal
-- enforce a strict prompt -> lint/test -> fix loop
-- show repo-level AI guardrails before coding (`AGENTS.md`)
+- Go fundamentals in practice: packages/modules, interfaces, and idiomatic error handling
+- lightweight concurrency when it adds value (workers + context cancellation)
+- Copilot in real editor workflows: complete tests, refactor small functions, explore stdlib usage
+- clear code and language conventions first, with mandatory verification loop
+- time reserved for tooling Q&A (`gofmt`, tests, modules, common ecosystem practices)
 
 ## Repo structure
 
@@ -67,7 +69,7 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 ## Suggested prep sequence
 
 1. Rehearse `docs/live-demo-script.md` exactly once with timer.
-2. Start the demo by showing `demo/go/AGENTS.md` and `demo/go/.github/copilot-instructions.md`.
-3. Pick one task from `docs/micro-change-tasks.md` (easy/medium/hard).
-4. Perform one micro-change, run quality gate, iterate to green.
-5. If time allows, repeat with a second task and close with takeaways.
+2. Start by showing `go.mod`, package layout, `demo/go/AGENTS.md`, and `demo/go/.github/copilot-instructions.md`.
+3. Pick one task from `docs/micro-change-tasks.md` focused on tests, refactor, or concurrency.
+4. Run the quality gate after each change and iterate to green.
+5. Reserve closing minutes for tooling questions (`gofmt`, tests, modules) and takeaways.

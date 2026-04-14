@@ -1,97 +1,91 @@
 # Micro-change tasks for live demo (Easy / Medium / Hard)
 
-Use this to pick one task live based on remaining time.
+Use this list to quickly pick a task based on remaining time.
 
 ## How to pick quickly
 
-- 3-5 minutes left: choose **Easy**.
-- 6-9 minutes left: choose **Medium**.
-- 10-14 minutes left: choose **Hard**.
+- 3-5 minutes: **Easy** (tests and conventions).
+- 6-9 minutes: **Medium** (interfaces + idiomatic error handling).
+- 10-14 minutes: **Hard** (light concurrency + aggregated errors).
 
 All tasks use the same loop:
 
-1. Ask for the smallest possible diff.
-2. Run `./scripts/quality_gate.sh`.
-3. If failing, iterate until `PASS`.
+1. ask for the smallest possible diff
+2. run `./scripts/quality_gate.sh`
+3. if it fails, iterate until `PASS`
 
 ---
 
-## Easy - explicit empty URL validation
+## Easy - complete table-driven tests
 
 ### Task 1 - Objective
 
-Improve error clarity by returning a specific error for empty or whitespace-only URLs.
+Improve URL validation coverage with one small table-driven test.
 
 ### Task 1 - Expected files touched
 
-- `demo/go/internal/probe/service.go`
 - `demo/go/internal/probe/service_test.go`
 
 ### Task 1 - Prompt to paste
 
 ```text
 Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff to make ProbeOnce return a clear "url is empty" error when the input URL is empty or whitespace-only.
-Keep existing behavior unchanged for all other URL cases.
-Add/adjust table-driven tests for this new behavior.
-Run ./scripts/quality_gate.sh and iterate with minimal fixes until PASS.
+Add one small table-driven test in service_test.go for validateURL edge cases.
+Keep test names clear and assertions idiomatic.
+Do not refactor production code unless needed.
+Run ./scripts/quality_gate.sh and iterate until PASS.
 ```
 
 ### Task 1 - Done criteria
 
-- Empty URL and whitespace URL return an error containing `url is empty`.
-- Existing tests still pass.
-- Quality gate ends in `QUALITY GATE: PASS`.
+- The test covers at least two cases (for example invalid scheme and empty host).
+- The diff is small and readable.
+- Quality gate ends with `QUALITY GATE: PASS`.
 
 ### Task 1 - Why this is a good opener
 
-- Very small diff.
-- Easy to explain business value: better diagnostics.
+- Demonstrates Copilot for test completion directly in the editor.
+- Reinforces idiomatic Go testing style.
 
 ---
 
-## Medium - treat HTTP 5xx as probe errors
+## Medium - interfaces + error wrapping
 
 ### Task 2 - Objective
 
-Keep status code information, but mark 5xx responses as errors in `ProbeOnce`.
+Use a fake `HTTPClient` to verify wrapped errors in `ProbeOnce` with `errors.Is`.
 
 ### Task 2 - Expected files touched
 
-- `demo/go/internal/probe/service.go`
 - `demo/go/internal/probe/service_test.go`
 
 ### Task 2 - Prompt to paste
 
 ```text
 Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff so ProbeOnce treats HTTP 5xx responses as errors.
-Requirements:
-- preserve StatusCode and Duration in Result
-- keep existing behavior for 2xx/4xx responses
-- wrap the returned error with useful context
-Add one focused test for a 503 response.
-Run ./scripts/quality_gate.sh and iterate with minimal fixes until PASS.
+In service_test.go, add a focused unit test that uses a fake HTTPClient implementation returning a sentinel error.
+Verify ProbeOnce wraps the error and errors.Is works.
+Keep changes minimal and idiomatic.
+Run ./scripts/quality_gate.sh and iterate until PASS.
 ```
 
 ### Task 2 - Done criteria
 
-- A 503 response returns `err != nil` and `result.StatusCode == 503`.
-- Non-5xx behavior stays unchanged.
-- Quality gate ends in `QUALITY GATE: PASS`.
+- The test uses an interface-based `HTTPClient` fake defined in the test.
+- Error wrapping is verified idiomatically with `errors.Is`.
+- Quality gate ends with `QUALITY GATE: PASS`.
 
 ### Task 2 - Why this is good in mid-slot
 
-- Still small scope.
-- Demonstrates behavior change + test updates.
+- Connects interfaces, testability, and error handling in one small change.
 
 ---
 
-## Hard - return joined batch errors instead of only first error
+## Hard - light concurrency with aggregated errors
 
 ### Task 3 - Objective
 
-Improve `ProbeAll` so it returns a joined error containing all per-item probe errors (not just the first one), while preserving deterministic result order.
+Improve `ProbeAll` to return an aggregated error with `errors.Join` when multiple URLs fail, while preserving deterministic order.
 
 ### Task 3 - Expected files touched
 
@@ -102,32 +96,31 @@ Improve `ProbeAll` so it returns a joined error containing all per-item probe er
 
 ```text
 Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff in ProbeAll so batch errors include all per-item probe errors (use errors.Join), instead of only the first error.
+Apply the smallest possible diff in ProbeAll so batch errors include all per-item probe errors with errors.Join, not only the first error.
 Constraints:
-- keep output order deterministic
+- keep deterministic result order
 - keep per-item Result.Err behavior
 - avoid broad refactors
-Add one focused test that proves multiple invalid URLs are represented in the returned batch error.
-Run ./scripts/quality_gate.sh and iterate with minimal fixes until PASS.
+Add one focused test proving that multiple invalid URLs are represented in the returned batch error.
+Run ./scripts/quality_gate.sh and iterate until PASS.
 ```
 
 ### Task 3 - Done criteria
 
-- Batch with multiple invalid URLs returns one joined error that reflects multiple failures.
-- `results[i]` order still matches input URL order.
-- Quality gate ends in `QUALITY GATE: PASS`.
+- The batch error reflects multiple failures.
+- `results[i]` keeps input order.
+- Quality gate ends with `QUALITY GATE: PASS`.
 
 ### Task 3 - Why this is a strong closer
 
-- Shows more advanced error semantics with minimal architecture change.
-- Great example of “AI can help with tricky edits, but tests keep us safe.”
+- Shows light concurrency and idiomatic error handling in a scoped change.
 
 ---
 
-## Universal fallback prompt (if time is almost over)
+## Bonus prompt - explore stdlib without leaving the editor
 
 ```text
 Read AGENTS.md and follow it strictly.
-Do one minimal readability-only change in service.go with no behavior change.
-Run ./scripts/quality_gate.sh and iterate until PASS.
+From service.go, identify the key stdlib APIs used (context, net/http, errors, sync, net/url).
+Suggest one minimal improvement grounded in those APIs, apply it, and run ./scripts/quality_gate.sh until PASS.
 ```

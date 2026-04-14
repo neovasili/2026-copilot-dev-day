@@ -2,6 +2,13 @@
 
 This mini-project is tuned for a 20-minute Copilot practical block focused on trustable speed.
 
+## Session focus
+
+- packages and modules in real context (`go.mod` + package structure)
+- interfaces and idiomatic error handling (wrapping and testability)
+- lightweight concurrency when it adds value
+- Copilot for tests, small refactors, and stdlib exploration without leaving the editor
+
 ## Core method
 
 1. Read repo guardrails (`AGENTS.md`).
@@ -50,8 +57,8 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 
 ```text
 Read AGENTS.md and follow it strictly.
-Apply the smallest possible diff for <task> in <file>.
-Keep behavior stable unless explicitly requested.
+Apply the smallest possible diff for one focused task in tests, refactor, or error/concurrency handling.
+Keep behavior stable unless explicitly requested and prefer idiomatic Go conventions.
 Run ./scripts/quality_gate.sh after editing.
 If checks fail, iterate with minimal fixes until PASS.
 Return only when quality gate is green.
