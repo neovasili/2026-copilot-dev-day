@@ -3,7 +3,7 @@
 [![Quality Gate](https://github.com/neovasili/2026-copilot-dev-day/actions/workflows/quality.yml/badge.svg)](https://github.com/neovasili/2026-copilot-dev-day/actions/workflows/quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=neovasili_2026-copilot-dev-day&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=neovasili_2026-copilot-dev-day)
 
-Prep materials for Juan Manuel Ruiz Fernandez's Go block in **Session 03** of GitHub Copilot Developer Days (Caceres edition).
+Prep materials for Juan Manuel Ruiz Fernandez's Go hands-on block in **Session 03** of GitHub Copilot Developer Days (Caceres edition).
 
 ## Confirmed context from event website
 
@@ -17,14 +17,18 @@ Confirmed details:
 
 - Event date: **Friday, April 17, 2026**
 - Event schedule: **17:00-20:00** (local time)
-- Session 03: **18:40-19:40** (60 min)
-- Session 03 format: practical workshop with three blocks of about 20 minutes each
+- Session 03 window: **18:40-19:40** (60 min)
+- Session 03 format: two tracks in parallel during the same window
+- Hands-on track: **Python 30 min + Go 30 min** (PC optional)
+- Workshop track: **TypeScript 60 min** with **Francisco Hermoso (Kiko)** (PC required)
 - Go block speaker listed as: **Juan Manuel Ruiz (Juanma)**
+- Go slot in the hands-on track: **19:10-19:40** (after Python)
 
 ## Session strategy in this repo
 
 The content is optimized for:
 
+- 30-minute Go hands-on delivery (second half of the Python+Go track)
 - Go fundamentals in practice: packages/modules, interfaces, and idiomatic error handling
 - lightweight concurrency when it adds value (workers + context cancellation)
 - Copilot in real editor workflows: complete tests, refactor small functions, explore stdlib usage
