@@ -3,6 +3,12 @@
 This is the main playbook for your Go segment.
 If you only open one prep file before the session, use this one.
 
+## Session 03 timing context
+
+- Session 03 keeps the same overall window: 18:40-19:40.
+- Activities now run by parallel track.
+- This script targets the hands-on track where Python runs first (30 min) and Go runs second (30 min).
+
 ## Block objective
 
 Show a repeatable workflow for using Copilot in Go while staying idiomatic:
@@ -31,37 +37,37 @@ Show a repeatable workflow for using Copilot in Go while staying idiomatic:
 - `demo/go/internal/probe/service.go`
 - `demo/go/internal/probe/service_test.go`
 
-## 20-minute run of show
+## 30-minute run of show
 
-- 00:00-01:30: Opening
+- 00:00-02:00: Opening
   - "Today we prioritize idiomatic Go and clear code."
   - "Copilot can accelerate delivery, but quality is decided by the gate."
 
-- 01:30-04:00: Go context
+- 02:00-05:00: Go context
   - Show `go.mod` and package structure.
   - Explain in 30 seconds how this connects to imports, tests, and modules.
 
-- 04:00-06:00: Guardrails + working contract
+- 05:00-08:00: Guardrails + working contract
   - Open `demo/go/AGENTS.md` and `demo/go/.github/copilot-instructions.md`.
   - Repeat the mandatory loop:
     1. minimal change
     2. run `./scripts/quality_gate.sh`
     3. if it fails, fix and repeat
 
-- 06:00-12:30: Micro-change 1 (tests or error handling)
+- 08:00-16:00: Micro-change 1 (tests or error handling)
   - Choose an Easy or Medium task from `docs/micro-change-tasks.md`.
   - Emphasize interfaces and idiomatic error handling while Copilot proposes changes.
   - Accept only small, readable diffs.
 
-- 12:30-15:30: Quality and verification
+- 16:00-20:00: Quality and verification
   - Run the quality gate.
   - If it fails, iterate live with a single focused correction.
 
-- 15:30-18:00: Optional micro-change 2 (light concurrency or refactor)
+- 20:00-27:00: Optional micro-change 2 (light concurrency or refactor)
   - Choose a Hard task only if time allows.
   - Reinforce that concurrency should be used where it adds value, not for complexity.
 
-- 18:00-20:00: Closing + tooling Q&A
+- 27:00-30:00: Closing + tooling Q&A
   - Leave room for questions: `gofmt`, tests, modules, package organization.
   - Suggested closing:
     - "Speed without quality does not scale."
@@ -111,7 +117,7 @@ GOTOOLCHAIN=go1.26.0 ./scripts/quality_gate.sh
 
 ## Timing fallback
 
-If you get only 15 minutes:
+If you get only 20 minutes:
 
 - show modules/packages in 30 seconds
 - do one micro-change (tests or errors)
