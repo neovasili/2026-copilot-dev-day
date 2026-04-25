@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "cd demo/go && ./scripts/quality_gate.sh",
+        "timeout": 180
+      }
+    ]
+  }
+}
